@@ -1,31 +1,7 @@
 import { useState } from "react";
 import { ethers } from "ethers";
 import { getContract } from "@/lib/contract";
-
-export enum CommitmentStatus {
-  Active = 0,
-  Submitted = 1,
-  Verified = 2,
-  Failed = 3
-}
-
-export interface Commitment {
-  id: number;
-  student: string;
-  goal: string;
-  stake: string;  
-  deadline: string;   
-  status: string; 
-  rawStatus: CommitmentStatus; 
-}
-
-export interface VerifierTask {
-  id: number;
-  goal: string;
-  proof: string;
-  stake: string;
-  student: string;
-}
+import { Commitment, VerifierTask } from "@/lib/types";
 
 export const useCommitment = (
     address: string, 
@@ -35,7 +11,7 @@ export const useCommitment = (
 ) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [commitments, setCommitments] = useState<Commitment[]>([]);
-    const [verifierCommitments, setVerifierCommitments] = useState<VerifierTask[]>();
+    const [verifierCommitments, setVerifierCommitments] = useState<VerifierTask[]>([]);
     const [pendingAmount, setPendingAmount] = useState<string>("0");
 
     const STATUS_MAP = ["Active", "Submitted", "Verified", "Failed"];
@@ -63,8 +39,9 @@ export const useCommitment = (
             showSuccess("SUCCESS", "Commitment locked on-chain!");
             await updateBalance();
             return true;
-        } catch (error: any) {
-            showError("CONTRACT ERROR", error.reason || "Transaction Failed");
+        } catch (error) {
+            const e = error as {reason?: string;};
+            showError("CONTRACT ERROR", e.reason || "Transaction Failed");
         } finally {
             setLoading(false);
         }
@@ -87,8 +64,9 @@ export const useCommitment = (
             await tx.wait();
             showSuccess("SUCCESS", "Proof submitted for review");
             return true;
-        } catch (error: any) {
-            showError("SUBMISSION ERROR", error.reason || "Check if deadline passed");
+        } catch (error) {
+            const e = error as {reason?: string};
+            showError("SUBMISSION ERROR", e.reason || "Check if deadline passed");
         } finally {
             setLoading(false);
         }
@@ -178,7 +156,7 @@ export const useCommitment = (
      *   - take @params (id, approved => the decision)
      *   - approves or rejects will be sent here
      */
-    const verifyTask = async (id: number, approved: boolean) => {
+    const verifyTask = async (id: string, approved: boolean) => {
         setLoading(true);
         try {
             const contract = await getContract();
@@ -187,8 +165,9 @@ export const useCommitment = (
             await tx.wait();
             showSuccess("VERIFIED", approved ? "Stake released to student" : "Student penalized");
             await loadVerifierTasks();
-        } catch (error: any) {
-            showError("VERIFICATION ERROR", error.reason || "Action failed");
+        } catch (error) {
+            const e = error as {reason?: string};
+            showError("VERIFICATION ERROR", e.reason || "Action failed");
         } finally {
             setLoading(false);
         }
@@ -216,8 +195,9 @@ export const useCommitment = (
             await tx.wait();
             showSuccess("WITHDRAWN", `${ethers.formatEther(amount)} ETH sent to your wallet`);
             await updateBalance();
-        } catch (error: any) {
-            showError("WITHDRAW ERROR", error.reason || "Failed to claim");
+        } catch (error) {
+            const e = error as {reason?: string};
+            showError("WITHDRAW ERROR", e.reason || "Failed to claim");
         } finally {
             setLoading(false);
         }

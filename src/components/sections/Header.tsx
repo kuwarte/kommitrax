@@ -1,6 +1,7 @@
+import { HeaderProps } from "@/lib/types";
 import { btnClass } from "../ui/Brutalist";
 
-export default function Header({ wallet, commitment }: any) {
+export default function Header({ wallet, commitment }: HeaderProps) {
   return (
     <header className="bg-white border-b border-black sticky top-0 z-20">
       <div className="max-w-7xl mx-auto px-4 py-5 sm:px-6 lg:px-8">

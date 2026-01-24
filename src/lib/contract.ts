@@ -1,11 +1,5 @@
 import { ethers } from "ethers";
 
-declare global {
-    interface Window {
-        ethereum?: any;
-    }
-}
-
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS!;
 const CONTRACT_ABI = [
   {

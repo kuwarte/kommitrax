@@ -1,6 +1,7 @@
+import { Commitment, StudentViewProps, VerifierTask, VerifierViewProps } from "@/lib/types";
 import { btnClass, inputClass } from "../ui/Brutalist";
 
-export const StudentView = ({ goal, setGoal, verifierAddress, setVerifierAddress, hours, setHours, handleCreate, loading, commitments, onOpenProof }: any) => (
+export const StudentView = ({ goal, setGoal, verifierAddress, setVerifierAddress, hours, setHours, handleCreate, loading, commitments, onOpenProof }: StudentViewProps) => (
   <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
     <div className="lg:col-span-1">
       <div className="bg-white border border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sticky top-28">
@@ -34,7 +35,7 @@ export const StudentView = ({ goal, setGoal, verifierAddress, setVerifierAddress
       {commitments.length === 0 ? (
         <div className="border border-black bg-gray-100 p-12 text-center font-bold text-gray-400 uppercase tracking-widest">No active commitments</div>
       ) : (
-        commitments.map((c: any) => (
+        commitments.map((c: Commitment) => (
           <div key={c.id} className="bg-white border border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] relative">
             <div className="absolute top-0 right-0 bg-black text-white text-[10px] px-2 py-1 uppercase font-bold">{c.status}</div>
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mt-2">
@@ -59,13 +60,13 @@ export const StudentView = ({ goal, setGoal, verifierAddress, setVerifierAddress
   </div>
 );
 
-export const VerifierView = ({ tasks, onVerify }: any) => (
+export const VerifierView = ({ tasks, onVerify }: VerifierViewProps) => (
   <div className="max-w-4xl mx-auto space-y-8">
     <h2 className="text-2xl font-black uppercase border-b-4 border-black inline-block">Verification Queue</h2>
     {!tasks || tasks.length === 0 ? (
       <div className="border border-black bg-gray-100 p-12 text-center font-bold text-gray-400 uppercase tracking-widest">Queue Empty</div>
     ) : (
-      tasks.map((task: any) => (
+      tasks.map((task: VerifierTask) => (
         <div key={task.id} className="bg-white border border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
           <div className="flex justify-between items-start mb-6 border-b border-black pb-4">
             <div>
@@ -81,8 +82,8 @@ export const VerifierView = ({ tasks, onVerify }: any) => (
             <span className="text-gray-400 select-none">DESCRIPTION/LINK: </span>{task.proof}
           </div>
           <div className="flex gap-4">
-            <button onClick={() => onVerify(task.id, false)} className={`${btnClass} flex-1 bg-[#ffcccc] text-red-900 border-red-900 hover:bg-red-900 hover:text-white`}>REJECT (SLASH)</button>
-            <button onClick={() => onVerify(task.id, true)} className={`${btnClass} flex-1 bg-[#ccffcc] text-green-900 border-green-900 hover:bg-green-900 hover:text-white`}>APPROVE (RELEASE)</button>
+            <button onClick={() => onVerify(task.id.toString(), false)} className={`${btnClass} flex-1 bg-[#ffcccc] text-red-900 border-red-900 hover:bg-red-900 hover:text-white`}>REJECT (SLASH)</button>
+            <button onClick={() => onVerify(task.id.toString(), true)} className={`${btnClass} flex-1 bg-[#ccffcc] text-green-900 border-green-900 hover:bg-green-900 hover:text-white`}>APPROVE (RELEASE)</button>
           </div>
         </div>
       ))
