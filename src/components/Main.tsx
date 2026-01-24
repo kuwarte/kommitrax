@@ -37,7 +37,7 @@ export default function Main() {
       commitment.loadAllCommitments();
       commitment.loadVerifierTasks();
     }
-  }, [wallet.connected, commitment]);
+  }, [wallet.connected, wallet.address]);
 
   const handleCreateCommitment = async () => {
     const success = await commitment.createCommitment(goal, verifierAddress, parseInt(hours));

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { ethers } from "ethers";
 import { getContract } from "@/lib/contract";
 import { Commitment, VerifierTask } from "@/lib/types";
@@ -78,40 +78,47 @@ export const useCommitment = (
      *   - take @params (none)
      *   - iterate not deleted and existing commitments
      */
-    const loadAllCommitments = async () => {
-        setLoading(true);
-
-        try {
-            const contract = await getContract();
-            if (!contract) return;
-
-            const count = Number(await contract.commitmentCount());
-            const list = [];
-
-            for (let i = 0; i < count; i++) {
-                try {
-                    const c = await contract.getCommitment(i);
-                    list.push({
-                        id: i,
-                        student: c.student,
-                        goal: c.goal,
-                        stake: ethers.formatEther(c.stake),
-                        deadline: new Date(Number(c.deadline) * 1000).toLocaleString(),
-                        status: STATUS_MAP[Number(c.status)],
-                        rawStatus: Number(c.status)
-                    });
-                } catch (e) {
-                    continue;
-                } 
-            }
-            setCommitments(list.reverse());
-        } catch (error) {
-            console.error("FETCH ERROR:", error);
-        } finally {
-            setLoading(false);
-        }
-    }
+    const loadAllCommitments = useCallback(async () => {
+    if (loading) return; 
     
+    try {
+        const contract = await getContract();
+        if (!contract) return;
+
+        const countResult = await contract.commitmentCount();
+        const count = Number(countResult);
+        
+        if (count === 0) {
+            setCommitments([]);
+            return;
+        }
+
+        const list = [];
+        for (let i = 0; i < count; i++) {
+            try {
+                const c = await contract.getCommitment(i);
+                list.push({
+                    id: i,
+                    student: c.student,
+                    goal: c.goal,
+                    stake: ethers.formatEther(c.stake),
+                    deadline: new Date(Number(c.deadline) * 1000).toLocaleString(),
+                    status: STATUS_MAP[Number(c.status)],
+                    rawStatus: Number(c.status)
+                });
+            } catch (innerError) {
+                
+                console.warn(`Failed to fetch ID ${i}`);
+                continue;
+            }
+        }
+        setCommitments(list.reverse());
+    } catch (error) {
+        
+        console.error("Contract call failed. Are you on the right network?", error);
+    }
+}, [address]);   
+
     /*
      * Load All Verifier Task Function
      * - what it do?
