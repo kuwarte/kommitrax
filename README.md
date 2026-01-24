@@ -1,4 +1,4 @@
-# Kommitrax
+# KOMMITRAX
 
 A blockchain-powered commitment tracking app built with Next.js and Ethereum smart contracts.
 
