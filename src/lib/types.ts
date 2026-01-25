@@ -90,7 +90,7 @@ export interface Badge {
   id: number;
   title: string;
   date: string;
-  icon: string;
+  icon: React.ReactNode;
   rarity: "Common" | "Rare" | "Legendary";
   description: string;
   unlocked: boolean;
