@@ -75,7 +75,7 @@ export default function Header({ wallet, commitment }: HeaderProps) {
             <button
               onClick={wallet.connectWallet}
               disabled={wallet.loading}
-              className={`${btnClass} bg-white hover:bg-black hover:text-white`}
+              className={`${btnClass} bg-white hover:bg-black hover:shadow-[2px_2px_0px_#888]! active:shadow-none! hover:text-white`}
             >
               {wallet.loading ? "CONNECTING..." : "CONNECT WALLET"}
             </button>
@@ -91,7 +91,7 @@ export default function Header({ wallet, commitment }: HeaderProps) {
               <button
                 onClick={commitment.checkAndWithdraw}
                 disabled={commitment.loading}
-                className={`${btnClass} bg-[#ccffcc] py-2 px-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[4px] hover:translate-y-[4px]`}
+                className={`${btnClass} bg-[#ccffcc] py-2 px-4`}
               >
                 CLAIM
               </button>

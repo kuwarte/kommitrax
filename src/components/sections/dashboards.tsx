@@ -19,7 +19,7 @@ export const StudentView = ({ goal, setGoal, verifierAddress, setVerifierAddress
             <label className="block text-xs font-bold uppercase mb-2">Deadline (Hours)</label>
             <input type="number" value={hours} onChange={(e) => setHours(e.target.value)} className={inputClass} />
           </div>
-          <div className="border border-dashed border-black p-3 text-xs bg-gray-50">
+          <div className="border border-dashed border-green-900 p-3 text-xs bg-green-50">
             <div className="flex justify-between mb-1"><span>STAKE:</span><span className="font-bold">0.01 ETH</span></div>
             <div className="flex justify-between text-gray-500"><span>PLATFORM FEE:</span><span>2%</span></div>
           </div>
