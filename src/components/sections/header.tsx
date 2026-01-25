@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { HeaderProps } from "@/lib/types";
+import { Badge, HeaderProps } from "@/lib/types";
 import { btnClass } from "../ui/brutalist";
 import { useState } from "react";
 import { Rocket, Beaker, Cpu } from "lucide-react";
@@ -12,7 +12,7 @@ export default function Header({ wallet, commitment }: HeaderProps) {
   const pathname = usePathname();
   const [showGallery, setShowGallery] = useState<boolean>(false);
 
-  const userBadges = [
+  const userBadges: Badge[] = [
   { 
     id: 1, 
     title: "Genesis User", 
