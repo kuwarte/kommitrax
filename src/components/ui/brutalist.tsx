@@ -8,7 +8,7 @@ export const Toast = ({ toast }: { toast: ToastState }) => (
   <div className={`fixed bottom-6 right-6 z-50 p-4 border border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] max-w-sm ${
     toast.type === 'success' ? 'bg-[#ccffcc]' : 'bg-[#ffcccc]'
   }`}>
-    <div className="font-black uppercase text-xs mb-1">{toast.title}</div>
-    <div className="text-sm">{toast.msg}</div>
+    <div className="font-black uppercase text-xs mb-1 text-black font-mono">{toast.title}</div>
+    <div className="text-sm text-black font-mono">{toast.msg}</div>
   </div>
 );

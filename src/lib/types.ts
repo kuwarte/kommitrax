@@ -38,6 +38,11 @@ export interface HeaderProps {
   commitment: CommitmentHook;
 }
 
+export interface ExtendedHeaderProps extends HeaderProps {
+  activeTab: string;
+  setActiveTab: (tab: "student" | "verifier" | "study") => void;
+}
+
 export enum CommitmentStatus {
   Active = 0,
   Submitted = 1,
@@ -79,4 +84,26 @@ export interface StudentViewProps {
 export interface VerifierViewProps {
   tasks: VerifierTask[];
   onVerify: (taskId: string, approved: boolean) => Promise<void> | void;
+}
+
+export interface Badge {
+  id: number;
+  title: string;
+  date: string;
+  icon: string;
+  rarity: "Common" | "Rare" | "Legendary";
+  description: string;
+  unlocked: boolean;
+}
+
+export interface Flashcard { 
+    id: number; 
+    front: string; 
+    back: string; 
+}
+
+export interface QuizItem { 
+    id: number; 
+    question: string; 
+    answer: string; 
 }

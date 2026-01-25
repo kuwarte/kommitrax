@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useWallet } from '@/hooks/useWallet';
 import { useCommitment } from '@/hooks/useCommitment';
-import { btnClass, Toast } from '@/components/ui/Brutalist';
-import Header from '@/components/sections/Header';
-import { StudentView, VerifierView } from '@/components/sections/Dashboards';
-import Footer from './sections/Footer';
+import { btnClass, Toast } from '@/components/ui/brutalist';
+import Header from '@/components/sections/header';
+import { StudentView, VerifierView } from '@/components/sections/dashboards';
+import Footer from './sections/footer';
 import { Commitment, ToastState } from '@/lib/types';
 
 

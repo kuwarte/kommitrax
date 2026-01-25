@@ -106,8 +106,7 @@ export const useCommitment = (
                     status: STATUS_MAP[Number(c.status)],
                     rawStatus: Number(c.status)
                 });
-            } catch (innerError) {
-                
+            } catch (innerError) {       
                 console.warn(`Failed to fetch ID ${i}`);
                 continue;
             }

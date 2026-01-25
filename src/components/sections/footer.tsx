@@ -1,4 +1,4 @@
-import { btnClass } from "../ui/Brutalist";
+import { btnClass } from "../ui/brutalist";
 
 export default function Footer() {
     return (

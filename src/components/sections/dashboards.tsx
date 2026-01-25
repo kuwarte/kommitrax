@@ -1,5 +1,5 @@
 import { Commitment, StudentViewProps, VerifierTask, VerifierViewProps } from "@/lib/types";
-import { btnClass, inputClass } from "../ui/Brutalist";
+import { btnClass, inputClass } from "../ui/brutalist";
 
 export const StudentView = ({ goal, setGoal, verifierAddress, setVerifierAddress, hours, setHours, handleCreate, loading, commitments, onOpenProof }: StudentViewProps) => (
   <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
