@@ -461,7 +461,7 @@ export default function StudyPage() {
                 <button 
                     onClick={startStudy}
                     disabled={(mode === "flashcards" ? cards.length : quizzes.length) === 0}
-                    className="bg-white text-black px-6 py-2 font-bold uppercase hover:bg-black hover:text-white border border-black disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-white text-black px-6 py-2 font-bold uppercase hover:bg-black hover:text-white border border-black disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
                 >
                     Start Session
                 </button>
@@ -496,11 +496,13 @@ export default function StudyPage() {
                 ))
               )}
               
-              {cards.length === 0 && quizzes.length === 0 && (
-                <div className="border border-dotted border-gray-300 p-20 text-center select-none">
-                   <p className="font-black uppercase tracking-[0.5em] text-gray-300 text-xl">Buffer Empty</p>
-                </div>
-              )}
+              {(mode === "flashcards" ? cards.length : quizzes.length) === 0 && (
+                  <div className="border border-dotted border-gray-300 p-20 text-center select-none">
+                    <p className="font-black uppercase tracking-[0.5em] text-gray-300 text-xl">
+                      Buffer Empty
+                    </p>
+                  </div>
+                )}
             </div>
           </div>
         </div>
