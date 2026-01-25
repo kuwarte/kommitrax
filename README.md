@@ -38,11 +38,13 @@ KOMMITRAX turns your study goals into a financial commitment. Stake money, do th
 ### Phase 2: NFT Rewards & Efficiency
 - [ ] **Improve Payouts**
   Optimize the splitting fees relative to Gas Fees.
-- [ ] **Withdrawal Vault**
+- [x] **Withdrawal Vault**
   Add a "Claim" button for safer, cheaper ETH transfers.
+- [x] **Sample Achievements Vault**
+  Create achievement vault sample with Fake NFTs.
 - [ ] **Soulbound NFT**
   Automated certificates that stay in your wallet forever.
-- [ ] **Study Reviewer**
+- [x] **Study Reviewer**
   Built-in flashcard page (Next.js + LocalStorage).
 - [ ] **Gas Estimator**
   Show transaction costs before the user pays.
