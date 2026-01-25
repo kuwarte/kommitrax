@@ -335,20 +335,28 @@ export default function StudyPage() {
      const total = mode === "flashcards" ? cards.length : quizzes.length;
      const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
 
+    const isLowScore = percentage < 50;
+
      return (
         <div className="min-h-screen bg-[#F0F0F0] font-mono flex items-center justify-center p-4">
            {toast && <Toast toast={toast} />}
            <div className="bg-white border border-black p-12 text-center shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] max-w-md w-full">
               <h2 className="text-4xl text-gray-900 font-extrabold uppercase mb-8 italic">Session Complete</h2>
-              
+
               {mode === "quiz" ? (
-                  <div className="mb-8 border border-black p-4 bg-gray-50">
-                      <p className="text-xs font-bold uppercase text-gray-900 mb-2">Final Analysis</p>
-                      <p className="text-5xl font-black text-green-800 mb-1">{score} / {total}</p>
-                      <p className="text-sm font-bold text-black uppercase tracking-widest">({percentage}% Accuracy)</p>
-                  </div>
+                  <div className={`mb-8 border-4 p-4 ${isLowScore ? 'border-red-600 bg-red-50' : 'border-green-600 bg-green-50'}`}>
+                    <p className={`text-xs font-bold uppercase mb-2 ${isLowScore ? 'text-red-900' : 'text-green-900'}`}>
+                        Final Analysis
+                    </p>
+                    <p className={`text-5xl font-black mb-1 ${isLowScore ? 'text-red-600' : 'text-green-600'}`}>
+                        {score} / {total}
+                    </p>
+                    <p className={`text-sm font-bold uppercase tracking-widest ${isLowScore ? 'text-red-900' : 'text-green-900'}`}>
+                        ({percentage}% Accuracy)
+                    </p>
+                </div>              
               ) : (
-                  <p className="mb-8 font-bold text-gray-900 border border-black p-4 bg-gray-50 uppercase">
+                  <p className="mb-8 font-black text-green-900 text-2xl border-4 p-4 border-green-600 bg-green-50 uppercase">
                     Reviewed {total} cards
                   </p>
               )}

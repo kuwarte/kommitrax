@@ -7,7 +7,7 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-10">
               
                     <div className="text-center md:text-left space-y-1">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Network Status</p>
+                        <p className="text-xl font-black font-mono uppercase text-gray-200 tracking-tighter leading-none">KOMMITRAX</p>
                         <p className="text-sm font-mono">
                             Running on <span className="text-green-200 font-bold">Sepolia Testnet</span>
                         </p>

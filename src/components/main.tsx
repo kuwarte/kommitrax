@@ -6,7 +6,6 @@ import { useCommitment } from '@/hooks/useCommitment';
 import { btnClass, Toast } from '@/components/ui/brutalist';
 import Header from '@/components/sections/header';
 import { StudentView, VerifierView } from '@/components/sections/dashboards';
-import Footer from './sections/footer';
 import { Commitment, ToastState } from '@/lib/types';
 
 
@@ -162,8 +161,6 @@ export default function Main() {
           </div>
         )}
       </div>
-        
-      <Footer />
       </div>
   );
 }
