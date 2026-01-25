@@ -47,23 +47,38 @@ export default function StudyPage() {
   const [quizStatus, setQuizStatus] = useState<QuizStatus>("unanswered");
 
   useEffect(() => {
-    if (typeof window === "undefined" || !walletAddress) return;
+    if (typeof window === "undefined" || !walletAddress) {
+      setCards([]);
+      setQuizzes([]);
+      setIsLoaded(false);
+      return;
+    }
+
     const savedData = localStorage.getItem(`kommitrax_${walletAddress}`);
     if (savedData) {
       try {
         const { savedCards, savedQuizzes } = JSON.parse(savedData);
-        if (savedCards) setCards(savedCards);
-        if (savedQuizzes) setQuizzes(savedQuizzes);
-      } catch (e) { console.error("Storage parse error", e); }
+        setCards(savedCards || []);
+        setQuizzes(savedQuizzes || []);
+      } catch (e) {
+        console.error("Storage parse error", e);
+        setCards([]);
+        setQuizzes([]);
+      }
+    } else {
+      setCards([]);
+      setQuizzes([]);
     }
+
     setIsLoaded(true);
   }, [walletAddress]);
 
   useEffect(() => {
     if (!isLoaded || !walletAddress) return;
+
     const data = JSON.stringify({ savedCards: cards, savedQuizzes: quizzes });
     localStorage.setItem(`kommitrax_${walletAddress}`, data);
-  }, [cards, quizzes, walletAddress, isLoaded]);
+  }, [cards, quizzes, isLoaded, walletAddress]);
 
   const handleSaveItem = () => {
     if (!input1 || !input2) {
