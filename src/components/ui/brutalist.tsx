@@ -11,6 +11,7 @@ export const rarityStyles: Record<string, string> = {
 	Rare: "bg-gradient-to-r from-blue-300 via-blue-200 to-blue-400 text-black font-bold shadow-[4px_4px_0px_0px_#516ba1] border-4 border-blue-800",
 	Legendary:
 		"bg-gradient-to-r from-yellow-400 via-yellow-100 to-yellow-500 text-black font-bold shadow-[4px_4px_0px_0px_#b58e00] border-4 border-yellow-900 animate-gradient-x bg-[length:200%_200%]",
+	Mythic: "bg-gradient-to-r from-purple-600 via-pink-500 to-purple-800 text-white font-bold shadow-[4px_4px_0px_0px_#7c3aed] border-4 border-purple-900 animate-gradient-x bg-[length:200%_200%]",
 };
 
 export const Toast = ({ toast }: { toast: ToastState }) => (

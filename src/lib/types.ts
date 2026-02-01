@@ -1,6 +1,13 @@
 declare global {
 	interface Window {
-		ethereum?: any;
+		ethereum?: {
+			request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
+			on: (event: string, handler: (...args: unknown[]) => void) => void;
+			removeListener: (event: string, handler: (...args: unknown[]) => void) => void;
+			selectedAddress?: string;
+			chainId?: string;
+			isMetaMask?: boolean;
+		};
 	}
 }
 
@@ -28,6 +35,7 @@ export interface CommitmentHook {
 	commitments: Commitment[];
 	verifierCommitments: VerifierTask[];
 	pendingAmount: string;
+	isOwner: boolean;
 
 	createCommitment: (goal: string, verifier: string, hours?: number) => Promise<boolean | void>;
 	submitProof: (id: string, proof: string) => Promise<boolean | void>;
@@ -35,6 +43,7 @@ export interface CommitmentHook {
 	loadVerifierTasks: () => Promise<void>;
 	verifyTask: (id: string, approved: boolean) => Promise<void>;
 	checkAndWithdraw: () => Promise<void>;
+	adminMint: (to: string, title: string, description: string, rarity: number) => Promise<void>;
 }
 
 export interface HeaderProps {
@@ -115,6 +124,7 @@ export interface AchievementGalleryProps {
 	badges: Badge[];
 	isOpen: boolean;
 	onClose: () => void;
+	isLoading?: boolean;
 }
 
 export interface Badge {
@@ -122,9 +132,10 @@ export interface Badge {
 	title: string;
 	date: string;
 	icon: React.ReactNode;
-	rarity: "Common" | "Rare" | "Legendary";
+	rarity: "Common" | "Rare" | "Legendary" | "Mythic";
 	description: string;
 	unlocked: boolean;
+	address: string;
 }
 
 export interface Flashcard {
@@ -160,9 +171,10 @@ export interface StudyManagerHook {
 	quizzes: QuizItem[];
 	setQuizzes: React.Dispatch<React.SetStateAction<QuizItem[]>>;
 	studyState: StudyState;
-	setStudyState: (state: StudyState) => void;
+	setStudyState: React.Dispatch<React.SetStateAction<StudyState>>;
 	saveItem: (mode: StudyMode, id: number | null, val1: string, val2: string) => boolean;
 	deleteItem: (id: number, mode: StudyMode) => void;
+	isLoading: boolean;
 }
 
 export interface StudyEditorProps {

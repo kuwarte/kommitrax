@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useWallet } from "@/hooks/useWallet";
 import { useCommitment } from "@/hooks/useCommitment";
-import { btnClass, Toast } from "@/components/ui/brutalist";
+import { btnClass, inputClass, Toast } from "@/components/ui/brutalist";
 import Header from "@/components/sections/header";
 import { StudentView, VerifierView } from "@/components/sections/dashboards";
 import { Commitment } from "@/lib/types";
@@ -11,10 +11,14 @@ import { useToast } from "@/hooks/useToast";
 import LoadingState from "./ui/loading";
 
 export default function Main() {
-	const [activeTab, setActiveTab] = useState<"student" | "verifier">("student");
+	const [activeTab, setActiveTab] = useState<"student" | "verifier" | "admin">("student");
 	const [goal, setGoal] = useState<string>("");
 	const [verifierAddress, setVerifierAddress] = useState<string>("");
 	const [hours, setHours] = useState<string>("24");
+	const [mintTo, setMintTo] = useState<string>("");
+	const [mintTitle, setMintTitle] = useState<string>("");
+	const [mintDescription, setMintDescription] = useState<string>("");
+	const [mintRarity, setMintRarity] = useState<string>("0");
 	const [selectedCommitment, setSelectedCommitment] = useState<Commitment | null>(null);
 	const [proofText, setProofText] = useState<string>("");
 
@@ -64,6 +68,18 @@ export default function Main() {
 		await commitment.verifyTask(taskId, approved);
 		commitment.loadAllCommitments();
 		commitment.loadVerifierTasks();
+	};
+
+	const handleAdminMint = async () => {
+		if (!mintTo || !mintTitle || !mintDescription) {
+			showError("VALIDATION", "Fill all fields");
+			return;
+		}
+		await commitment.adminMint(mintTo, mintTitle, mintDescription, parseInt(mintRarity));
+		setMintTo("");
+		setMintTitle("");
+		setMintDescription("");
+		setMintRarity("0");
 	};
 
 	const myCommitments: Commitment[] = wallet.connected
@@ -134,21 +150,27 @@ export default function Main() {
 				) : (
 					<div className="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
 						<div className="flex gap-4 mb-10 border-b border-black pb-4">
-							{(["student", "verifier"] as const).map((tab) => (
-								<button
-									key={tab}
-									onClick={() => setActiveTab(tab)}
-									className={`text-sm font-bold uppercase tracking-widest px-4 py-2 border border-black transition-all ${
-										activeTab === tab
-											? "bg-black text-white shadow-[4px_4px_0px_0px_#888]"
-											: "bg-white text-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-									}`}
-								>
-									{tab === "student"
-										? "Student Dashboard"
-										: `Verifier Tasks (${commitment.verifierCommitments?.length || 0})`}
-								</button>
-							))}
+							{["student", "verifier", ...(commitment.isOwner ? ["admin"] : [])].map(
+								(tab) => (
+									<button
+										key={tab}
+										onClick={() =>
+											setActiveTab(tab as "student" | "verifier" | "admin")
+										}
+										className={`text-sm font-bold uppercase tracking-widest px-4 py-2 border border-black transition-all ${
+											activeTab === tab
+												? "bg-black text-white shadow-[4px_4px_0px_0px_#888]"
+												: "bg-white text-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+										}`}
+									>
+										{tab === "student"
+											? "Student Dashboard"
+											: tab === "verifier"
+												? `Verifier Tasks (${commitment.verifierCommitments?.length || 0})`
+												: "Admin Panel"}
+									</button>
+								)
+							)}
 						</div>
 
 						{activeTab === "student" ? (
@@ -164,11 +186,82 @@ export default function Main() {
 								commitments={myCommitments}
 								onOpenProof={setSelectedCommitment}
 							/>
-						) : (
+						) : activeTab === "verifier" ? (
 							<VerifierView
 								tasks={commitment.verifierCommitments || []}
 								onVerify={handleVerify}
 							/>
+						) : (
+							<div className="max-w-2xl mx-auto space-y-8 bg-indigo-200 border border-black p-4 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+								<h2 className="text-2xl font-black uppercase border-b-4 border-black inline-block">
+									Admin Panel - NFT Testing
+								</h2>
+								<div className="border border-black bg-white p-8 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+									<h3 className="text-xl font-bold uppercase mb-6">
+										Mint Test NFT
+									</h3>
+									<div className="space-y-4">
+										<div>
+											<label className="block text-sm font-bold uppercase mb-2">
+												Recipient Address
+											</label>
+											<input
+												type="text"
+												value={mintTo}
+												onChange={(e) => setMintTo(e.target.value)}
+												className={inputClass}
+												placeholder="0x..."
+											/>
+										</div>
+										<div>
+											<label className="block text-sm font-bold uppercase mb-2">
+												Title
+											</label>
+											<input
+												type="text"
+												value={mintTitle}
+												onChange={(e) => setMintTitle(e.target.value)}
+												className={inputClass}
+												placeholder="Achievement Title"
+											/>
+										</div>
+										<div>
+											<label className="block text-sm font-bold uppercase mb-2">
+												Description
+											</label>
+											<textarea
+												value={mintDescription}
+												onChange={(e) => setMintDescription(e.target.value)}
+												className={inputClass}
+												rows={3}
+												placeholder="Achievement description"
+											/>
+										</div>
+										<div>
+											<label className="block text-sm font-bold uppercase mb-2">
+												Rarity
+											</label>
+											<select
+												value={mintRarity}
+												onChange={(e) => setMintRarity(e.target.value)}
+												className={inputClass}
+											>
+												<option value="0">Common</option>
+												<option value="1">Rare</option>
+												<option value="2">Legendary</option>
+												<option value="3">Mythic</option>
+											</select>
+										</div>
+										<button
+											onClick={handleAdminMint}
+											disabled={commitment.loading}
+											className={`${btnClass} w-full bg-indigo-400 text-white hover:bg-purple-600`}
+										>
+											{commitment.loading ? "MINTING..." : "MINT TEST NFT"}
+										</button>
+									</div>
+								</div>
+							</div>
 						)}
 					</div>
 				)}

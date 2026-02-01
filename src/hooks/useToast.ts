@@ -9,6 +9,9 @@ export function useToast(duration = 4000) {
 		setToast(null);
 	}, []);
 
+	/*
+	 * Toast Initialized Function for Either SUCCESS or ERROR
+	 */
 	const showToast = useCallback(
 		(type: "success" | "error", title: string, msg: string) => {
 			if (timerRef.current) {
@@ -25,6 +28,9 @@ export function useToast(duration = 4000) {
 		[duration]
 	);
 
+	/*
+	 * Success Toast Message Function
+	 */
 	const showSuccess = useCallback(
 		(title: string, msg: string) => {
 			showToast("success", title, msg);
@@ -32,6 +38,9 @@ export function useToast(duration = 4000) {
 		[showToast]
 	);
 
+	/*
+	 * Error Toast Message Function
+	 */
 	const showError = useCallback(
 		(title: string, msg: string) => {
 			showToast("error", title, msg);

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { Flashcard, QuizItem, StudyState } from "@/lib/types";
+import { Flashcard, QuizItem, StudyState, StudyManagerHook } from "@/lib/types";
 
 export function useStudyManager(
 	walletAddress: string | undefined,
 	showError: (title: string, msg: string) => void,
 	showSuccess: (title: string, msg: string) => void
-) {
+): StudyManagerHook {
 	const [cards, setCards] = useState<Flashcard[]>([]);
 	const [quizzes, setQuizzes] = useState<QuizItem[]>([]);
 	const [studyState, setStudyState] = useState<StudyState>("idle");
@@ -30,9 +30,12 @@ export function useStudyManager(
 		const savedData = localStorage.getItem(`kommitrax_${walletAddress}`);
 		if (savedData) {
 			try {
-				const { savedCards, savedQuizzes } = JSON.parse(savedData);
-				setCards(savedCards || []);
-				setQuizzes(savedQuizzes || []);
+				const parsed = JSON.parse(savedData) as {
+					savedCards?: Flashcard[];
+					savedQuizzes?: QuizItem[];
+				};
+				setCards(parsed.savedCards || []);
+				setQuizzes(parsed.savedQuizzes || []);
 			} catch (e) {
 				console.error("Storage Parse Error:", e);
 			}

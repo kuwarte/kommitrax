@@ -4,45 +4,190 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Badge, HeaderProps } from "@/lib/types";
 import { btnClass } from "../ui/brutalist";
-import { useState } from "react";
-import { Rocket, Beaker, Cpu } from "lucide-react";
+import { useState, useEffect } from "react";
+
+import {
+	Rocket,
+	Cpu,
+	Target,
+	Coins,
+	Star,
+	Shield,
+	Flame,
+	Trophy,
+	Crown,
+	Gem,
+	Zap,
+	Medal,
+	Scroll,
+	Compass,
+	BookOpen,
+	GraduationCap,
+	Users,
+	Eye,
+	Copy,
+	Check,
+} from "lucide-react";
 import AchievementGallery from "../ui/achievements";
+import { getNFTContract, NFT_CONTRACT_ADDRESS } from "@/lib/contract";
 
 export default function Header({ wallet, commitment }: HeaderProps) {
 	const pathname = usePathname();
 	const [showGallery, setShowGallery] = useState<boolean>(false);
+	const [userBadges, setUserBadges] = useState<Badge[]>([]);
+	const [loadingBadges, setLoadingBadges] = useState<boolean>(false);
 
-	// I'll put placeholder for now, still learning ERC tokens
-	const userBadges: Badge[] = [
-		{
-			id: 1,
-			title: "Perfect Logic",
-			date: "Jan 1, 2100",
-			icon: <Cpu size={30} strokeWidth={2.5} />,
-			rarity: "Legendary",
-			description:
-				"Calculated a 100% precision score on a lab module with only one try that consist of >100 questions.",
-			unlocked: true,
-		},
-		{
-			id: 2,
-			title: "Lab Rat",
-			date: "Jan 26, 2026",
-			icon: <Beaker size={30} strokeWidth={2} />,
-			rarity: "Rare",
-			description: "Experimented in the Study Lab for over 10 hours.",
-			unlocked: true,
-		},
-		{
-			id: 3,
-			title: "Genesis User",
-			date: "4.5B Years Ago",
-			icon: <Rocket size={30} strokeWidth={2} />,
-			rarity: "Common",
-			description: "Successfully initialized the KOMMITRAX into your wallet.",
-			unlocked: true,
-		},
-	];
+	const [copied, setCopied] = useState(false);
+
+	const handleCopyAddress = async () => {
+		if (!wallet.address) return;
+		try {
+			await navigator.clipboard.writeText(wallet.address);
+			setCopied(true);
+			setTimeout(() => setCopied(false), 2000);
+		} catch (err) {
+			console.error("Failed to copy!", err);
+		}
+	};
+
+	useEffect(() => {
+		if (wallet.connected && wallet.address) {
+			loadUserAchievements();
+		}
+	}, [wallet.connected, wallet.address]);
+
+	const loadUserAchievements = async () => {
+		if (!wallet.address) return;
+
+		setLoadingBadges(true);
+		try {
+			console.log("ATTEMPTING TO GET NFT CONTRACT...");
+			const nftContract = await getNFTContract();
+			if (!nftContract) {
+				console.log("NFT CONTRACT NOT AVAILABLE - CHECK CONTRACT ADDRESS AND NETWORK");
+				setUserBadges([]);
+				return;
+			}
+
+			const allTransferEvents = await nftContract.queryFilter(nftContract.filters.Transfer());
+
+			const mintEvents = allTransferEvents.filter((event: any) => {
+				const args = event.args;
+				if (!args) return false;
+
+				const from = Array.isArray(args) ? args[0] : args.from;
+				const to = Array.isArray(args) ? args[1] : args.to;
+
+				return (
+					from === "0x0000000000000000000000000000000000000000" &&
+					to?.toLowerCase() === wallet.address!.toLowerCase()
+				);
+			});
+
+			const tokenIds = mintEvents
+				.map((event: any) => {
+					const args = event.args;
+					return Array.isArray(args) ? args[2] : args?.tokenId;
+				})
+				.filter((tokenId) => tokenId !== undefined && tokenId !== null);
+
+			if (tokenIds.length === 0) {
+				setUserBadges([]);
+				return;
+			}
+
+			const badges: Badge[] = [];
+			for (const tokenId of tokenIds) {
+				try {
+					const achievement = await nftContract.achievements(tokenId);
+					const rarityNames = ["Common", "Rare", "Legendary", "Mythic"];
+					const rarity = rarityNames[achievement.rarity] as
+						| "Common"
+						| "Rare"
+						| "Legendary"
+						| "Mythic";
+
+					let icon;
+					switch (achievement.title) {
+						case "Genesis Scholar":
+							icon = <Rocket size={30} />;
+							break;
+						case "Getting Started":
+							icon = <BookOpen size={30} />;
+							break;
+						case "Consistency King":
+							icon = <Crown size={30} />;
+							break;
+						case "Week Warrior":
+							icon = <Flame size={30} />;
+							break;
+						case "Dedicated Learner":
+							icon = <GraduationCap size={30} />;
+							break;
+						case "Scholar":
+							icon = <Scroll size={30} />;
+							break;
+						case "High Roller":
+							icon = <Zap size={30} />;
+							break;
+						case "Master Scholar":
+							icon = <Trophy size={30} />;
+							break;
+						case "Iron Will":
+							icon = <Target size={30} />;
+							break;
+						case "Wealth of Knowledge":
+							icon = <Gem size={30} />;
+							break;
+						case "Legendary Scholar":
+							icon = <Cpu size={30} strokeWidth={2.5} />;
+							break;
+						case "Century Streak":
+							icon = <Star size={30} />;
+							break;
+						case "Knowledge Baron":
+							icon = <Coins size={30} />;
+							break;
+						case "Pioneer":
+							icon = <Compass size={30} />;
+							break;
+						case "Mentor":
+							icon = <Users size={30} />;
+							break;
+						case "Guardian":
+							icon = <Shield size={30} />;
+							break;
+						case "Sage":
+							icon = <Eye size={30} />;
+							break;
+						default:
+							icon = <Medal size={30} />;
+					}
+
+					badges.push({
+						id: Number(tokenId),
+						title: achievement.title,
+						date: new Date(Number(achievement.mintedAt) * 1000).toLocaleDateString(),
+						icon: icon,
+						rarity: rarity,
+						description: achievement.description,
+						unlocked: true,
+						address: NFT_CONTRACT_ADDRESS,
+					});
+				} catch (error) {
+					console.warn(`FAILED TO LOAD ACHIEVEMENT ${tokenId}:`, error);
+				}
+			}
+
+			setUserBadges(badges);
+		} catch (error) {
+			console.error("FAILED TO LOAD ACHIEVEMENTS:", error);
+			console.error("ERROR DETAILS:", error instanceof Error ? error.message : String(error));
+			setUserBadges([]);
+		} finally {
+			setLoadingBadges(false);
+		}
+	};
 
 	const getNavLinkClass = (href: string) => {
 		const isActive = pathname === href;
@@ -94,9 +239,25 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 										{parseFloat(wallet.balance).toFixed(4)} ETH
 									</div>
 								</div>
-								<div className="px-3 py-1.5 border bg-white border-black text-xs font-bold">
+								<button
+									onClick={handleCopyAddress}
+									className="group flex items-center gap-2 px-3 py-1.5 border bg-white border-black text-xs font-bold hover:bg-black hover:text-white transition-colors"
+									title="Copy Wallet Address"
+								>
 									{wallet.address.slice(0, 6)}...{wallet.address.slice(-4)}
-								</div>
+									{copied ? (
+										<Check
+											size={14}
+											strokeWidth={4}
+											className="opacity-40 group-hover:opacity-100"
+										/>
+									) : (
+										<Copy
+											size={14}
+											className="opacity-40 group-hover:opacity-100"
+										/>
+									)}
+								</button>
 								<button
 									onClick={commitment.checkAndWithdraw}
 									disabled={commitment.loading}
@@ -130,7 +291,8 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 										onClick={() => setShowGallery(true)}
 										className={getNavLinkClass("#")}
 									>
-										Achievements <span className="opacity-50">[NFT]</span>
+										Achievements{" "}
+										<span className="opacity-50">({userBadges.length})</span>
 									</button>
 								</div>
 							</nav>
@@ -142,6 +304,7 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 				<AchievementGallery
 					badges={userBadges}
 					isOpen={showGallery}
+					isLoading={loadingBadges}
 					onClose={() => setShowGallery(false)}
 				/>
 			)}
