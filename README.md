@@ -109,8 +109,8 @@ KOMMITRAX features a comprehensive Soulbound NFT achievement system with 4 rarit
 
 #### 🟢 **Common Achievements** (Easy to obtain)
 
-- **Genesis Scholar** - Complete your first commitment
-- **Getting Started** - Complete 3 commitments
+- **Genesis Scholar** - Complete your first commitment and get verified
+- **Getting Started** - Complete 3 commitments and get verified
 
 #### 🔵 **Rare Achievements** (Moderate difficulty)
 
