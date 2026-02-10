@@ -14,13 +14,13 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
 
 	return (
 		<div
-			className={`fixed bottom-0 left-0 right-0 z-200 font-mono transition-transform duration-300 ease-out text-white bg-black pointer-events-auto border-t border-white shadow-[0px_-4px_0px_#000] ${
+			className={`fixed bottom-0 left-0 right-0 z-200 font-mono transition-transform duration-300 ease-out text-white bg-black pointer-events-auto border-t border-white/30 shadow-[0px_-4px_0px_#000] ${
 				isVisible ? "translate-y-0" : "translate-y-full"
 			}`}
 		>
 			<div className="w-full flex h-full min-h-[220px]">
 				<div className="flex-grow flex flex-col">
-					<div className="w-full p-6 border-b border-white flex items-center justify-start">
+					<div className="w-full p-6 border-b border-white/30 flex items-center justify-start">
 						<h3 className="text-xl md:text-2xl font-black uppercase tracking-tighter leading-none">
 							How to use Kommitrax?
 						</h3>
@@ -28,7 +28,7 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
 
 					<div className="flex-grow p-6 grid grid-cols-1 md:grid-cols-3 gap-8 items-start justify-center">
 						<div className="group flex flex-col gap-2">
-							<div className="w-full border-b border-white pb-1 flex justify-between items-end">
+							<div className="w-full border-b border-white/30 pb-1 flex justify-between items-end">
 								<span className="text-xs font-bold uppercase">Step_01</span>
 							</div>
 							<div>
@@ -42,7 +42,7 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
 						</div>
 
 						<div className="group flex flex-col gap-2">
-							<div className="w-full border-b border-white pb-1 flex justify-between items-end">
+							<div className="w-full border-b border-white/30 pb-1 flex justify-between items-end">
 								<span className="text-xs font-bold uppercase">Step_02</span>
 							</div>
 							<div>
@@ -56,7 +56,7 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
 						</div>
 
 						<div className="group flex flex-col gap-2">
-							<div className="w-full border-b border-white pb-1 flex justify-between items-end">
+							<div className="w-full border-b border-white/30 pb-1 flex justify-between items-end">
 								<span className="text-xs font-bold uppercase">Step_03</span>
 							</div>
 							<div>
@@ -73,7 +73,7 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
 
 				<button
 					onClick={handleClose}
-					className="group w-16 md:w-24 border-l border-white flex items-center justify-center transition-colors hover:bg-white hover:text-black"
+					className="group w-16 md:w-24 border-l border-white/30 flex items-center justify-center transition-colors hover:bg-white hover:text-black"
 					aria-label="Close"
 				>
 					<svg

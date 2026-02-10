@@ -219,11 +219,11 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 								disabled={wallet.loading}
 								className={`${btnClass} bg-green-400/30 hover:bg-green-400/20`}
 							>
-								{wallet.loading ? "CONNECTING..." : "CONNECT"}
+								{wallet.loading ? "CONNECTING..." : "CONNECT WALLET"}
 							</button>
 						) : (
 							<div className="flex items-center gap-4">
-								<div className="hidden sm:block text-right leading-none">
+								<div className="hidden lg:block text-right leading-none">
 									<div className="text-[10px] uppercase font-bold text-gray-400">
 										Balance
 									</div>
@@ -235,7 +235,7 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 								<div className="flex items-center gap-2">
 									<button
 										onClick={handleCopyAddress}
-										className="hidden group sm:flex items-center gap-2 px-2 py-1.5 border bg-white border-black text-[10px] sm:text-xs font-bold hover:bg-black hover:text-white transition-colors"
+										className="hidden group lg:flex items-center gap-2 px-2 py-1.5 border bg-white border-black text-[10px] sm:text-xs font-bold hover:bg-black hover:text-white transition-colors"
 									>
 										{wallet.address.slice(0, 4)}...{wallet.address.slice(-4)}
 										{copied ? (
@@ -248,14 +248,14 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 									<button
 										onClick={commitment.checkAndWithdraw}
 										disabled={commitment.loading}
-										className={`${btnClass} hidden md:block bg-white py-1.5 px-4 shrink-0 text-xs`}
+										className={`${btnClass} hidden lg:block bg-white py-1.5 px-4 shrink-0 text-xs`}
 									>
 										CLAIM
 									</button>
 
 									<button
 										onClick={() => setIsMenuOpen(!isMenuOpen)}
-										className="p-1.5 border-2 border-black bg-black text-white sm:hidden"
+										className="p-1.5 border border-black text-black lg:hidden shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all"
 									>
 										{isMenuOpen ? <X size={20} /> : <Menu size={20} />}
 									</button>
@@ -266,43 +266,42 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 				</div>
 
 				{wallet.connected && isMenuOpen && (
-					<div className="sm:hidden bg-zinc-300 border-t border-black animate-in slide-in-from-top-2 duration-200">
+					<div className="sm:hidden bg-black border-t border-black animate-in slide-in-from-top-2 duration-200">
 						<nav className="flex flex-col p-4 gap-2">
-							<div className="p-3 border border-black bg-zinc-50 flex flex-col gap-1">
-								<div className="flex justify-between items-center">
-									<span className="text-[10px] font-black text-black uppercase">
-										Wallet
-									</span>
-									<span className="text-xs font-black">
-										{parseFloat(wallet.balance).toFixed(4)} ETH
-									</span>
+							<div className="flex flex-col gap-2 bg-zinc-100 p-4">
+								<div className="p-3 border border-black bg-zinc-50 flex flex-col gap-1">
+									<button
+										onClick={handleCopyAddress}
+										className="flex items-center justify-between text-[10px] font-bold mt-1 bg-white border border-black p-1 px-2 active:bg-black active:text-white"
+									>
+										{wallet.address.slice(0, 4)}...{wallet.address.slice(-4)}
+										{copied ? <Check size={10} /> : <Copy size={10} />}
+									</button>
+									<div className="flex justify-between items-center">
+										<span className="text-xs font-black">
+											BAL: {parseFloat(wallet.balance).toFixed(4)} ETH
+										</span>
+									</div>
 								</div>
 								<button
-									onClick={handleCopyAddress}
-									className="flex items-center justify-between text-[10px] font-bold mt-1 bg-white border border-black p-1 px-2"
+									onClick={commitment.checkAndWithdraw}
+									className="mb-4 w-full bg-white text-black border border-black py-2 font-black uppercase tracking-widest active:translate-y-0.5 transition-all shadow-[0px_4px_0px_#000] active:shadow-none"
 								>
-									{wallet.address.slice(0, 4)}...{wallet.address.slice(-4)}
-									{copied ? <Check size={10} /> : <Copy size={10} />}
+									CLAIM
 								</button>
 							</div>
-							<button
-								onClick={commitment.checkAndWithdraw}
-								className="mb-4 w-full bg-white text-black border border-black py-2 font-black uppercase tracking-widest active:scale-[0.98] transition-transform"
-							>
-								CLAIM PENDING
-							</button>
 
 							<Link
 								href="/"
 								onClick={() => setIsMenuOpen(false)}
-								className="flex bg-black text-white justify-between items-center p-3  font-black uppercase text-sm "
+								className="flex border border-white/30 text-white justify-between items-center p-3  font-black uppercase text-sm active:bg-white active:text-black"
 							>
 								Dashboard <ChevronRight size={16} />
 							</Link>
 							<Link
 								href="/study"
 								onClick={() => setIsMenuOpen(false)}
-								className="flex bg-black text-white justify-between items-center p-3  font-black uppercase text-sm "
+								className="flex border border-white/30 text-white justify-between items-center p-3  font-black uppercase text-sm active:bg-white active:text-black"
 							>
 								Study Lab <ChevronRight size={16} />
 							</Link>
@@ -311,9 +310,13 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 									setShowGallery(true);
 									setIsMenuOpen(false);
 								}}
-								className="flex bg-black text-white justify-between items-center p-3  font-black uppercase text-sm "
+								className="flex border border-white/30 text-white justify-between items-center p-3  font-black uppercase text-sm active:bg-white active:text-black"
 							>
-								Achievements ({userBadges.length}) <ChevronRight size={16} />
+								<span>
+									Achievements
+									<span className="text-white/30"> ({userBadges.length})</span>
+								</span>
+								<ChevronRight size={16} />
 							</button>
 						</nav>
 					</div>

@@ -41,10 +41,10 @@ export default function AchievementGallery({
 			className="
     fixed inset-0 z-100 
     flex items-end sm:items-center justify-center 
-    p-0 sm:p-6 
+    md:p-0 
     bg-black/40 backdrop-blur-md 
     transition-all duration-300
-    animate-in fade-in
+    animate-in fade-in p-6
   "
 		>
 			<div className="w-full max-w-2xl bg-white border-4 border-black shadow-[16px_16px_0px_#000] flex flex-col relative animate-in zoom-in-95 duration-200 md:h-[80vh] h-full">
