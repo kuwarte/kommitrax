@@ -27,6 +27,10 @@ import {
 	Eye,
 	Copy,
 	Check,
+	X,
+	Menu,
+	ChevronRight,
+	Wallet,
 } from "lucide-react";
 import AchievementGallery from "../ui/achievements";
 import { getNFTContract, NFT_CONTRACT_ADDRESS } from "@/lib/contract";
@@ -38,6 +42,7 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 	const [loadingBadges, setLoadingBadges] = useState<boolean>(false);
 
 	const [copied, setCopied] = useState(false);
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 	const handleCopyAddress = async () => {
 		if (!wallet.address) return;
@@ -61,10 +66,8 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 
 		setLoadingBadges(true);
 		try {
-			console.log("ATTEMPTING TO GET NFT CONTRACT...");
 			const nftContract = await getNFTContract();
 			if (!nftContract) {
-				console.log("NFT CONTRACT NOT AVAILABLE - CHECK CONTRACT ADDRESS AND NETWORK");
 				setUserBadges([]);
 				return;
 			}
@@ -74,10 +77,8 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 			const mintEvents = allTransferEvents.filter((event: any) => {
 				const args = event.args;
 				if (!args) return false;
-
 				const from = Array.isArray(args) ? args[0] : args.from;
 				const to = Array.isArray(args) ? args[1] : args.to;
-
 				return (
 					from === "0x0000000000000000000000000000000000000000" &&
 					to?.toLowerCase() === wallet.address!.toLowerCase()
@@ -101,11 +102,7 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 				try {
 					const achievement = await nftContract.achievements(tokenId);
 					const rarityNames = ["Common", "Rare", "Legendary", "Mythic"];
-					const rarity = rarityNames[achievement.rarity] as
-						| "Common"
-						| "Rare"
-						| "Legendary"
-						| "Mythic";
+					const rarity = rarityNames[achievement.rarity] as any;
 
 					let icon;
 					switch (achievement.title) {
@@ -178,11 +175,8 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 					console.warn(`FAILED TO LOAD ACHIEVEMENT ${tokenId}:`, error);
 				}
 			}
-
 			setUserBadges(badges);
 		} catch (error) {
-			console.error("FAILED TO LOAD ACHIEVEMENTS:", error);
-			console.error("ERROR DETAILS:", error instanceof Error ? error.message : String(error));
 			setUserBadges([]);
 		} finally {
 			setLoadingBadges(false);
@@ -194,11 +188,7 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 		return `
       text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1
       border border-transparent transition-none flex items-center gap-2
-      ${
-			isActive
-				? "bg-white text-black border-white"
-				: "text-white border-white/30 hover:border-white hover:bg-white hover:text-black"
-		}
+      ${isActive ? "bg-white text-black border-white" : "text-white border-white/30 hover:border-white hover:bg-white hover:text-black"}
     `;
 	};
 
@@ -216,7 +206,9 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 									KOMMITRAX
 								</h1>
 								<span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mt-1">
-									On-Chain Study Commitment & Proof System
+									<span className="hidden md:inline">
+										On-Chain Study Commitment & Proof System
+									</span>
 								</span>
 							</div>
 						</div>
@@ -225,9 +217,9 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 							<button
 								onClick={wallet.connectWallet}
 								disabled={wallet.loading}
-								className={`${btnClass} bg-white hover:bg-black hover:shadow-[2px_2px_0px_#888]! active:shadow-none! hover:text-white`}
+								className={`${btnClass} bg-green-400/30 hover:bg-green-400/20`}
 							>
-								{wallet.loading ? "CONNECTING..." : "CONNECT WALLET"}
+								{wallet.loading ? "CONNECTING..." : "CONNECT"}
 							</button>
 						) : (
 							<div className="flex items-center gap-4">
@@ -239,39 +231,96 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 										{parseFloat(wallet.balance).toFixed(4)} ETH
 									</div>
 								</div>
-								<button
-									onClick={handleCopyAddress}
-									className="group flex items-center gap-2 px-3 py-1.5 border bg-white border-black text-xs font-bold hover:bg-black hover:text-white transition-colors"
-									title="Copy Wallet Address"
-								>
-									{wallet.address.slice(0, 6)}...{wallet.address.slice(-4)}
-									{copied ? (
-										<Check
-											size={14}
-											strokeWidth={4}
-											className="opacity-40 group-hover:opacity-100"
-										/>
-									) : (
-										<Copy
-											size={14}
-											className="opacity-40 group-hover:opacity-100"
-										/>
-									)}
-								</button>
-								<button
-									onClick={commitment.checkAndWithdraw}
-									disabled={commitment.loading}
-									className={`${btnClass} bg-[#ccffcc] py-2 px-4`}
-								>
-									CLAIM
-								</button>
+
+								<div className="flex items-center gap-2">
+									<button
+										onClick={handleCopyAddress}
+										className="hidden group sm:flex items-center gap-2 px-2 py-1.5 border bg-white border-black text-[10px] sm:text-xs font-bold hover:bg-black hover:text-white transition-colors"
+									>
+										{wallet.address.slice(0, 4)}...{wallet.address.slice(-4)}
+										{copied ? (
+											<Check size={12} strokeWidth={4} />
+										) : (
+											<Copy size={12} />
+										)}
+									</button>
+
+									<button
+										onClick={commitment.checkAndWithdraw}
+										disabled={commitment.loading}
+										className={`${btnClass} hidden md:block bg-white py-1.5 px-4 shrink-0 text-xs`}
+									>
+										CLAIM
+									</button>
+
+									<button
+										onClick={() => setIsMenuOpen(!isMenuOpen)}
+										className="p-1.5 border-2 border-black bg-black text-white sm:hidden"
+									>
+										{isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+									</button>
+								</div>
 							</div>
 						)}
 					</div>
 				</div>
 
+				{wallet.connected && isMenuOpen && (
+					<div className="sm:hidden bg-zinc-300 border-t border-black animate-in slide-in-from-top-2 duration-200">
+						<nav className="flex flex-col p-4 gap-2">
+							<div className="p-3 border border-black bg-zinc-50 flex flex-col gap-1">
+								<div className="flex justify-between items-center">
+									<span className="text-[10px] font-black text-black uppercase">
+										Wallet
+									</span>
+									<span className="text-xs font-black">
+										{parseFloat(wallet.balance).toFixed(4)} ETH
+									</span>
+								</div>
+								<button
+									onClick={handleCopyAddress}
+									className="flex items-center justify-between text-[10px] font-bold mt-1 bg-white border border-black p-1 px-2"
+								>
+									{wallet.address.slice(0, 4)}...{wallet.address.slice(-4)}
+									{copied ? <Check size={10} /> : <Copy size={10} />}
+								</button>
+							</div>
+							<button
+								onClick={commitment.checkAndWithdraw}
+								className="mb-4 w-full bg-white text-black border border-black py-2 font-black uppercase tracking-widest active:scale-[0.98] transition-transform"
+							>
+								CLAIM PENDING
+							</button>
+
+							<Link
+								href="/"
+								onClick={() => setIsMenuOpen(false)}
+								className="flex bg-black text-white justify-between items-center p-3  font-black uppercase text-sm "
+							>
+								Dashboard <ChevronRight size={16} />
+							</Link>
+							<Link
+								href="/study"
+								onClick={() => setIsMenuOpen(false)}
+								className="flex bg-black text-white justify-between items-center p-3  font-black uppercase text-sm "
+							>
+								Study Lab <ChevronRight size={16} />
+							</Link>
+							<button
+								onClick={() => {
+									setShowGallery(true);
+									setIsMenuOpen(false);
+								}}
+								className="flex bg-black text-white justify-between items-center p-3  font-black uppercase text-sm "
+							>
+								Achievements ({userBadges.length}) <ChevronRight size={16} />
+							</button>
+						</nav>
+					</div>
+				)}
+
 				{wallet.connected && (
-					<div className="w-full bg-black border-t border-black animate-in fade-in slide-in-from-top-1 duration-300">
+					<div className="hidden md:block w-full bg-black border-t border-black">
 						<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 							<nav className="flex items-center justify-between h-8">
 								<div className="flex items-center">
@@ -285,7 +334,6 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 										</Link>
 									</div>
 								</div>
-
 								<div className="flex items-center">
 									<button
 										onClick={() => setShowGallery(true)}
@@ -300,6 +348,7 @@ export default function Header({ wallet, commitment }: HeaderProps) {
 					</div>
 				)}
 			</header>
+
 			{showGallery && (
 				<AchievementGallery
 					badges={userBadges}

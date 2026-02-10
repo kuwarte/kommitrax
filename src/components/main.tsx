@@ -133,7 +133,7 @@ export default function Main() {
 				<Header wallet={wallet} commitment={commitment} />
 
 				{!wallet.connected ? (
-					<div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black font-mono md:m-12">
+					<div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-zinc-800 font-mono md:m-12 shadow-[inset_-300px_0px_100px_#111] border border-black">
 						<div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
 							{warpLines.map((line) => (
 								<div
@@ -151,7 +151,10 @@ export default function Main() {
 							))}{" "}
 						</div>
 
-						<div className="relative z-10 max-w-xs md:max-w-xl lg:max-w-2xl w-full mx-4 animate-vibrate flex items-center">
+						<div
+							className="relative z-10 max-w-xs md:max-w-xl lg:max-w-2xl w-full mx-4 animate-vibrate flex items-center hover:-translate-y-2 hover:-translate-x-2 hover:shadow-[20px_20px_0px_#000] active:-translate-y-1 active:-translate-x-1 active:shadow-none cursor-pointer"
+							onClick={wallet.connectWallet}
+						>
 							<div className="absolute -left-28 top-1/2 -translate-y-1/2 w-28 h-32 pointer-events-none flex items-center justify-end overflow-hidden">
 								<div
 									className="h-16 bg-white opacity-90 animate-flame-fast"
@@ -178,7 +181,7 @@ export default function Main() {
 									))}
 								</div>
 
-								<div className="p-8 md:p-10 md:px-20">
+								<div className="p-8 md:p-10 md:px-20 select-none">
 									<h2 className="text-4xl md:text-5xl font-black uppercase leading-[0.8] tracking-tighter">
 										<span className="block bg-black text-white p-1 px-2 w-fit">
 											FINISH TASK
