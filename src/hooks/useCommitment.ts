@@ -116,7 +116,10 @@ export const useCommitment = (
 			const list = [];
 			for (let i = 0; i < count; i++) {
 				try {
-					const c = await contract.getCommitment(i);
+					const c = await contract.commitments(i);
+
+					if (c.student === ethers.ZeroAddress) continue;
+
 					list.push({
 						id: i,
 						student: c.student,
@@ -155,17 +158,26 @@ export const useCommitment = (
 
 			for (let i = 0; i < count; i++) {
 				try {
-					const c = await contract.getCommitment(i);
+					const c = await contract.commitments(i);
+
+					const cVerifier = c.verifier || c[1];
+					const cStatus = Number(c.status !== undefined ? c.status : c[6]);
+					const cStudent = c.student || c[0];
+					const cGoal = c.goal || c[2];
+					const cProof = c.proof || c[3];
+					const cStake = c.stake || c[4];
+
 					if (
-						c.verifier.toLowerCase() === address.toLowerCase() &&
-						Number(c.status) === 1
+						cVerifier &&
+						cVerifier.toLowerCase() === address.toLowerCase() &&
+						cStatus === 1
 					) {
 						tasks.push({
 							id: i,
-							goal: c.goal,
-							proof: c.proof,
-							stake: ethers.formatEther(c.stake),
-							student: c.student,
+							goal: cGoal,
+							proof: cProof,
+							stake: ethers.formatEther(cStake),
+							student: cStudent,
 						});
 					}
 				} catch (e) {
