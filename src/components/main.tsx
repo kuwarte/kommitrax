@@ -6,9 +6,10 @@ import { useCommitment } from "@/hooks/useCommitment";
 import { btnClass, inputClass, Toast } from "@/components/ui/brutalist";
 import Header from "@/components/sections/header";
 import { StudentView, VerifierView } from "@/components/sections/dashboards";
-import { Commitment } from "@/lib/types";
+import { Commitment, WarpLine } from "@/lib/types";
 import { useToast } from "@/hooks/useToast";
 import LoadingState from "./ui/loading";
+import HelpModal from "./ui/help-modal";
 
 export default function Main() {
 	const [activeTab, setActiveTab] = useState<"student" | "verifier" | "admin">("student");
@@ -24,10 +25,40 @@ export default function Main() {
 
 	const [isInitializing, setIsInitializing] = useState(true);
 
+	const [warpLines, setWarpLines] = useState<WarpLine[]>([]);
 	const { toast, showSuccess, showError } = useToast();
+
+	const [showHelp, setShowHelp] = useState(false);
 
 	const wallet = useWallet(showError);
 	const commitment = useCommitment(wallet.address, wallet.updateBalance, showSuccess, showError);
+
+	useEffect(() => {
+		const lines = [...Array(25)].map((_, i) => ({
+			id: i,
+			height: Math.random() * 1.5 + 0.5 + "px",
+			width: Math.random() * 200 + 100 + "px",
+			top: Math.random() * 100 + "%",
+			delay: Math.random() * 4 + "s",
+			duration: Math.random() * 0.8 + 0.2 + "s",
+		}));
+		setWarpLines(lines);
+	}, []);
+
+	useEffect(() => {
+		const lastSeenDate = localStorage.getItem("track_date_now");
+		const today = new Date().toDateString();
+
+		if (lastSeenDate !== today) {
+			const timer = setTimeout(() => setShowHelp(true), 1000);
+			return () => clearTimeout(timer);
+		}
+	}, []);
+
+	const closeHelp = () => {
+		localStorage.setItem("track_date_now", new Date().toDateString());
+		setShowHelp(false);
+	};
 
 	useEffect(() => {
 		if (wallet.connected) {
@@ -94,57 +125,96 @@ export default function Main() {
 
 	return (
 		<div className="min-h-screen bg-[#F0F0F0] text-black font-mono selection:bg-black selection:text-white flex flex-col">
-			<div className="flex-grow pb-20">
+			{showHelp && wallet.connected && <HelpModal onClose={closeHelp} />}
+
+			<div className="flex-grow pb-2">
 				{toast && <Toast toast={toast} />}
 
 				<Header wallet={wallet} commitment={commitment} />
 
 				{!wallet.connected ? (
-					<div className="max-w-7xl mx-auto px-4 py-24 text-center">
-						<div className="inline-block border border-black bg-white p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] max-w-2xl text-left">
-							<h2 className="text-5xl font-black uppercase mb-4 leading-[0.9] tracking-tighter">
-								<span className="bg-green-500/30 px-2">Finish the task.</span>
-								<br />
-								Or <span className="bg-red-500/30 px-2">lose your ETH.</span>
-							</h2>
+					<div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black font-mono md:m-12">
+						<div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+							{warpLines.map((line) => (
+								<div
+									key={line.id}
+									className="absolute bg-white opacity-20 animate-warp-horiz"
+									style={{
+										height: line.height,
+										width: line.width,
+										top: line.top,
+										left: "110%",
+										animationDelay: line.delay,
+										animationDuration: line.duration,
+									}}
+								/>
+							))}{" "}
+						</div>
 
-							<p className="text-sm font-bold uppercase mb-10 text-gray-500">
-								Procrastination is hard to avoid. Implement risk to motivate.
-							</p>
+						<div className="relative z-10 max-w-xs md:max-w-xl lg:max-w-2xl w-full mx-4 animate-vibrate flex items-center">
+							<div className="absolute -left-28 top-1/2 -translate-y-1/2 w-28 h-32 pointer-events-none flex items-center justify-end overflow-hidden">
+								<div
+									className="h-16 bg-white opacity-90 animate-flame-fast"
+									style={{
+										clipPath: "polygon(100% 0%, 0% 50%, 100% 100%, 80% 50%)",
+										width: "40px",
+									}}
+								></div>
 
-							<div className="space-y-2 mb-10">
-								<div className="flex items-start gap-3">
-									<span className="bg-black/40 text-black px-2 font-bold">
-										STAKE
-									</span>
-									<p className="text-sm font-bold uppercase tracking-tight">
-										Deposit 0.01 ETH as a commitment to your goal.
-									</p>
+								<div
+									className="h-24 bg-white opacity-30 animate-flame-slow"
+									style={{
+										clipPath: "polygon(100% 0%, 0% 50%, 100% 100%, 70% 50%)",
+										width: "20px",
+									}}
+								></div>
+							</div>
+							<div className="absolute -right-20 top-0 bottom-0 w-20 bg-white border-l-4 border-y border-r border-black z-20"></div>
+
+							<div className="bg-white border border-black relative w-full overflow-hidden shadow-[4px_8px_0px_0px_#27272a]">
+								<div className="absolute top-1 left-0 right-0 flex justify-between px-4 opacity-30">
+									{[...Array(12)].map((_, i) => (
+										<div key={i} className="w-0.5 h-0.5 bg-black"></div>
+									))}
 								</div>
-								<div className="flex items-start gap-3">
-									<span className="bg-black/40 text-black px-2 font-bold">
-										RISK
-									</span>
-									<p className="text-sm font-bold uppercase tracking-tight">
-										Failure to provide proof, then funds are forfeited.
-									</p>
+
+								<div className="p-8 md:p-10 md:px-20">
+									<h2 className="text-4xl md:text-5xl font-black uppercase leading-[0.8] tracking-tighter">
+										<span className="block bg-black text-white p-1 px-2 w-fit">
+											FINISH TASK
+										</span>
+										<span className="block  p-1 px-2 w-fit">OR</span>
+										<span className="block bg-black text-white p-1 px-2  w-fit">
+											FORFEIT ETH
+										</span>
+									</h2>
+
+									<div className="flex items-center gap-3">
+										<p className="text-[10px] text-zinc-700 font-black uppercase tracking-[0.4em]">
+											Connect Your Wallet To Continue
+										</p>
+									</div>
 								</div>
-								<div className="flex items-start gap-3">
-									<span className="bg-green-500/50 text-black px-2 font-bold">
-										REWARD
-									</span>
-									<p className="text-sm font-bold uppercase tracking-tight">
-										Verify your work and reclaim your assets instantly.
-									</p>
+
+								<div className="absolute bottom-1 left-0 right-0 flex justify-between px-4 opacity-30">
+									{[...Array(12)].map((_, i) => (
+										<div key={i} className="w-[2px] h-[2px] bg-black"></div>
+									))}
 								</div>
 							</div>
 
-							<button
-								onClick={wallet.connectWallet}
-								className={`${btnClass} text-black hover:text-white w-full py-5 text-xl hover:bg-red-700/50 transition-colors`}
-							>
-								ACCEPT THE RISK!
-							</button>
+							<div className="absolute -left-6 top-0 bottom-0 w-6 flex flex-col justify-between py-2">
+								<div
+									className="h-10 w-full bg-white border border-black"
+									style={{ clipPath: "polygon(100% 0, 0 0, 100% 100%)" }}
+								></div>
+								<div
+									className="h-10 w-full bg-white border border-black"
+									style={{ clipPath: "polygon(100% 100%, 0 100%, 100% 0)" }}
+								></div>
+							</div>
+
+							<div className="absolute -left-2 top-1/2 -translate-y-1/2 w-2 h-16 bg-[#27272a] border border-black"></div>
 						</div>
 					</div>
 				) : (

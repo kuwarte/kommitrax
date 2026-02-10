@@ -5,7 +5,9 @@ import { btnClass } from "./brutalist";
 
 export default function CommitmentCard({ c, onOpenProof }: CommitmentCardProps) {
 	return (
-		<div className="bg-white border border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] relative">
+		<div
+			className={`bg-white border border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] relative ${c.rawStatus === 2 ? "opacity-60" : ""}`}
+		>
 			<div className="absolute top-0 right-0 bg-black text-white text-[10px] px-2 py-1 uppercase font-bold">
 				{c.status}
 			</div>

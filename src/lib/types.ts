@@ -15,6 +15,15 @@ export type StudyState = "idle" | "active" | "complete";
 export type QuizStatus = "unanswered" | "correct" | "incorrect";
 export type StudyMode = "flashcards" | "quiz";
 
+export interface WarpLine {
+	id: number;
+	height: string;
+	width: string;
+	top: string;
+	delay: string;
+	duration: string;
+}
+
 export interface ToastState {
 	type: "success" | "error";
 	title: string;
