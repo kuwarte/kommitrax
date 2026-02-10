@@ -54,6 +54,8 @@ KOMMITRAX turns your study goals into a financial commitment. Stake money, do th
       Show on-chain timers to sense urgency.
 - [ ] **Notifications**
       Push notifications and email alerts for upcoming deadlines.
+- [ ] **Optimize Minting**
+      Optimize the logic of Smart Contract by providing accurate and consistency minting with accurate logic
 
 ---
 
