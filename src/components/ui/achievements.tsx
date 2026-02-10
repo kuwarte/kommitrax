@@ -37,8 +37,17 @@ export default function AchievementGallery({
 	if (!isOpen) return null;
 
 	return (
-		<div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-			<div className="w-full max-w-2xl bg-white border-4 border-black shadow-[16px_16px_0px_#000] flex flex-col relative animate-in zoom-in-95 duration-200 min-h-[85vh]">
+		<div
+			className="
+    fixed inset-0 z-100 
+    flex items-end sm:items-center justify-center 
+    p-0 sm:p-6 
+    bg-black/40 backdrop-blur-md 
+    transition-all duration-300
+    animate-in fade-in
+  "
+		>
+			<div className="w-full max-w-2xl bg-white border-4 border-black shadow-[16px_16px_0px_#000] flex flex-col relative animate-in zoom-in-95 duration-200 md:h-[80vh] h-full">
 				<div className="p-4 border-b-4 border-black bg-black text-white flex justify-between items-center shrink-0">
 					<div className="flex flex-col">
 						<h2 className="text-xl font-black uppercase tracking-tighter leading-none">
@@ -58,7 +67,7 @@ export default function AchievementGallery({
 					</button>
 				</div>
 
-				<div className="flex-1 overflow-y-auto m-4 p-4 border-2 bg-gray-300 border-dashed border-gray-400 custom-scrollbar">
+				<div className="flex-1 overflow-y-auto m-2 p-2 sm:m-4 sm:p-4 border-2 bg-gray-300 border-dashed border-gray-400 custom-scrollbar">
 					{isLoading && (
 						<div className="absolute inset-0 z-50 bg-gray-300/80 flex flex-col items-center justify-center">
 							<div className="w-12 h-12 border-4 animate-spin mb-4 bg-gray-600 text-gray-100 flex items-center justify-center font-black text-3xl cursor-default border-gray-800">
@@ -69,7 +78,7 @@ export default function AchievementGallery({
 							</p>
 						</div>
 					)}
-					<div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-4">
+					<div className="grid grid-cols-5 md:grid-cols-6 gap-2">
 						{sortedBadges.map((badge) => (
 							<div
 								key={badge.id}
@@ -111,7 +120,6 @@ export default function AchievementGallery({
 								</span>{" "}
 							</div>
 						))}
-
 						{emptySlots.map((_, index) => (
 							<div
 								key={`empty-${index}`}

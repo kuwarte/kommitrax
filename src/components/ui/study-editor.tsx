@@ -34,15 +34,21 @@ export default function StudyEditor({ study, mode, setMode, walletAddress }: Stu
 	return (
 		<div className="min-h-screen bg-[#F0F0F0] font-mono text-black px-4 py-10">
 			<div className="max-w-7xl mx-auto border border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-				<div className="flex flex-row justify-between items-start md:items-center bg-black text-white p-6 md:py-4 border-black">
+				<div className="flex flex-row justify-between items-start md:items-center bg-black text-white p-6 md:py-6 border-black">
 					<div>
-						<h1 className="text-4xl md:text-5xl font-bold font-mono uppercase tracking-wider leading-none">
-							Study Lab
-						</h1>
+						<div className="flex items-center gap-4">
+							<div className="w-12 h-12 bg-white text-black flex items-center justify-center font-black text-3xl cursor-default border-2 border-black">
+								☐
+							</div>
+
+							<h1 className="text-4xl md:text-5xl font-bold font-mono uppercase tracking-wider leading-none">
+								Study Lab
+							</h1>
+						</div>
 						<p className="flex items-center text-xs border border-black font-bold font-mono px-3 py-1 text-zinc-500">
 							<span className=" mr-2">USR:</span>
 							<span className="hidden md:inline">
-								{walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+								{walletAddress.slice(0, 10)}...{walletAddress.slice(-4)}
 							</span>
 							<span className="inline md:hidden">
 								{walletAddress.slice(0, 3)}...{walletAddress.slice(-4)}

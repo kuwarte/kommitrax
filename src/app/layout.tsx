@@ -17,6 +17,10 @@ export const metadata: Metadata = {
 	title: "KOMMITRAX | On-Chain Accountability",
 	description:
 		"A decentralized study commitment and proof system. Secure your goals with smart contract escrows on the Sepolia testnet.",
+	icons: {
+		icon: "/icon.svg",
+		shortcut: "/icon.svg",
+	},
 };
 
 export default function RootLayout({
