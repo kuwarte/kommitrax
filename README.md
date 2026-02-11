@@ -1,4 +1,4 @@
-# KOMMITRAX: Kill Procrastination with Blockchain
+# KOMMITRAX: Kill Procrastination with Web3
 
 KOMMITRAX turns your study goals into a financial commitment. Stake money, do the work, and get your money back. Fail, and your stake is gone.
 
